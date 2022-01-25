@@ -15,4 +15,6 @@ LEFT JOIN employee manager ON employee.manager_id = manager.id;
 SELECT roles.id, roles.title,  department.department_name AS department, roles.salary
 FROM roles
 LEFT JOIN department ON roles.department_id = department.id;
+-- add a department
 
+INSERT INTO department_name(department_name) VALUES(?);
