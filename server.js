@@ -181,38 +181,67 @@ addDepartment =()=>{
     })
 };
 
-// // add a role
-// addRole=()=>{
-//     inquirer.prompt ([
-//         {
-//           type: 'input',
-//           name: 'addRole', 
-//           message: 'What is the name of the role?',
-//           validate: (value)=>{
-//             if(value){return true;
-//                 }else{
-//                 console.log("Please enter a role");
-//                 return false;
-//                 }
-//             }
-//         },
-//         {
+ // add a role
+addRole=()=>{
+  inquirer.prompt ([
+        {
+           type: 'input',
+           name: 'role', 
+           message: 'What is the name of the role?',
+           validate: (value)=>{
+             if(value){return true;
+                 }else{
+                 console.log("Please enter a role");
+                 return false;
+                 }
+             }
+         },
+         {
 
-//             type: 'input',
-//             name: 'salary', 
-//             message: 'What is the salary of the role?',
-//             validate: (value)=>{
-//               if(value){return true;
-//                   }else{
-//                   console.log("Please enter a salary");
-//                   return false;
-//                   }
-//               }
-//         },
-// ])
-// .then(answer=>{
-//   const params = [answer.addRole, answer.salary];
+             type: 'input',
+             name: 'salary', 
+             message: 'What is the salary of the role?',
+            validate: (value)=>{
+              if(parseInt(value) >0 ){ 
+                  
+                  return true;
+              }else{console.log("Please enter a possitive number greater than zero");
+                 return false;
+                  }
+          }
+         },
+ ])
+ .then(answer=>{
+   const params = [answer.role, answer.salary];
+   const roleSql = `SELECT id , department_name FROM department`;
+   db.promise().query(roleSql)
+      .then((data)=>{
+        // console.log(data[0])
+        // make the choices object list for the prompt question
+        const dept = data[0].map(({department_name, id})=>({name: department_name, value:id}));
+        // console.log('show dept--->', dept)
 
-// })
 
-// }
+        inquirer.prompt([
+          {
+            type:'list',
+            name:'dept',
+            message:'What department is this role in?',
+            choices:dept
+          }
+          ])
+          .then((answer)=>{
+              const dept = answer.dept;
+              params.push(dept);
+              const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`; 
+              db.promise().query(sql, params)
+              .then(()=>{ console.log('Added ' + answer.role + " to roles!"); showRoles() })
+              .catch(err=> console.log(err))
+            })
+        }     
+    
+    
+    
+    );
+      });
+  }
