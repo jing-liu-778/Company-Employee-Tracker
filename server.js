@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+const { abort } = require('process');
 
 
 // connect to database
@@ -217,7 +218,7 @@ addRole=()=>{
    db.promise().query(roleSql)
       .then((data)=>{
         // console.log(data[0])
-        // make the choices object list for the prompt question
+        //------ make the choices object list for the prompt question
         const dept = data[0].map(({department_name, id})=>({name: department_name, value:id}));
         // console.log('show dept--->', dept)
 
@@ -231,17 +232,126 @@ addRole=()=>{
           }
           ])
           .then((answer)=>{
+            console.log(answer)
               const dept = answer.dept;
+              console.log(dept)
               params.push(dept);
               const sql = `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`; 
               db.promise().query(sql, params)
               .then(()=>{ console.log('Added ' + answer.role + " to roles!"); showRoles() })
               .catch(err=> console.log(err))
             })
-        }     
-    
-    
-    
+        }    
     );
       });
   }
+
+  //add an employee
+  addEmployee=()=>{
+    inquirer.prompt([
+      {
+        type: 'input',
+        name: 'firstName',
+        message: "What is the employee's first name?",
+        validate: addFirst => {
+          if (addFirst) {
+              return true;
+          } else {
+              console.log('Please enter a first name');
+              return false;
+          }
+        }
+      },
+      {
+        type: 'input',
+        name: 'lastName',
+        message: "What is the employee's last name?",
+        validate: addLast => {
+          if (addLast) {
+              return true;
+          } else {
+              console.log('Please enter a last name');
+              return false;
+          }
+        }
+      }
+    ])
+    .then((answer)=>{
+      const params = [answer.firstName, answer.lastName]
+
+      // get roles from roles table
+      const roleSql =`SELECT roles.id, roles.title FROM roles`;
+      db.promise().query(roleSql)
+      .then((data)=>{
+        const roles = data[0].map(({id, title})=>({name:title, value:id}));
+        inquirer.prompt([
+          {
+            type:'list',
+            name:'role',
+            message:"What is the emoplyee's role?",
+            choices:roles
+          }
+        ])
+        .then(roleChoice=>{
+          console.log("prompt answer---->", roleChoice);
+          const role = roleChoice.role;
+          console.log("role---->",role)
+          params.push(role);
+          const managerSql =`SELECT * FROM employee `
+
+          db.promise().query(managerSql)
+          .then((data)=>{
+            const managers = data[0].map(({id, first_name, last_name})=>({name:first_name+ " "+ last_name, value:id}));
+            inquirer.prompt([
+              {
+                type: 'list',
+                    name: 'manager',
+                    message: "Who is the employee's manager?",
+                    choices: managers
+              }
+          ])
+          .then(managerChoice=>{
+            const manager = managerChoice.manager;
+            params.push(manager);
+            const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+            VALUES (?, ?, ?, ?)`;
+          
+            db.query(sql, params, (err,result)=>{
+            if (err) throw err;
+                    console.log("Employee has been added!")
+
+                    showEmployees();
+          })
+          })
+        })
+      })
+    })
+    
+   //------ get all employee list
+  //  db.query('SELECT * FROM employee', (err, emplRes) => {
+  //    console.log("empRes---->", emplRes)
+    // if (err) throw err;
+    // const employeeChoice = [
+    //   {
+    //     name: 'None',
+    //     value: 0
+    //   }
+    // ]; //an employee could have no manager
+    // emplRes.forEach(({ first_name, last_name, id }) => {
+    //   employeeChoice.push({
+    //     name: first_name + " " + last_name,
+    //     value: id
+    //   });
+    // });
+    // //get role list 
+    // db.promise().query('SELECT * FROM roles')
+    // .then 
+
+  // })
+    //----use promise
+  // db.promise().query('SELECT * FROM employee')
+  // .then(emplRes=>console.log("empRes---->", emplRes))
+})
+}
+
+//update an employee role
