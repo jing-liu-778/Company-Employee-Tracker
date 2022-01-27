@@ -17,4 +17,4 @@ FROM roles
 LEFT JOIN department ON roles.department_id = department.id;
 -- add a department
 
-INSERT INTO department_name(department_name) VALUES(?);
+INSERT INTO department(department_name) VALUES(?);
