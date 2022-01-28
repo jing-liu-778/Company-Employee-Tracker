@@ -43,3 +43,5 @@ SELECT  department.id,
 FROM  roles
 LEFT JOIN department on department.id = roles.department_id
 GROUP BY department.id;
+-- view employee by manager
+SELECT DISTINCT m.id, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee e Inner JOIN employee m ON e.manager_id = m.id
