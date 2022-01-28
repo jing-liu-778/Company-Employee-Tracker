@@ -355,3 +355,87 @@ addRole=()=>{
 }
 
 //update an employee role
+
+updateEmployee=()=>{
+  const sql =`SELECT * FROM employee`;
+  db.promise().query(sql)
+  .then((data)=>{
+    const employees = data[0].map(({first_name, last_name, id})=>({name:first_name+" "+last_name, value:id}));
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'name',
+        message: "Which employee would you like to update?",
+        choices: employees
+      }
+    ])
+    .then((empChoice=>{
+      const employee = empChoice.name;
+      const params=[];
+      params.push(employee);
+      const roleSql =`SELECT * FROM roles`;
+      db.promise().query(roleSql)
+      .then((data)=>{
+        const roles = data[0].map(({id, title})=>({name:title, value:id}));
+        inquirer.prompt([
+          {
+            type: 'list',
+                name: 'role',
+                message: "What is the employee's new role?",
+                choices: roles
+          }
+        ])
+        .then((roleChoice)=>{
+          const role = roleChoice.role;
+          params.push(role);
+          console.log(params);
+          const sql =`UPDATE employee SET role_id=? WHERE id =?`;
+          db.promise().query(sql, [params[1], params[0]])
+          .then(()=>{
+                    console.log('Employee has been update!');
+                    showEmployees();})
+        })
+      })
+    }));
+  })
+};
+
+// update employee manager
+updateManager=()=>{
+  const sql = `SELECT * FROM employee`;
+  db.promise().query(sql)
+  .then((data)=>{
+    const employees = data[0].map(({first_name, last_name, id})=>({name:first_name+" "+last_name, value:id}));
+    const managers = data[0].map(({first_name, last_name, id})=>({name:first_name+" "+last_name, value:id}));
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'employee',
+        message: "Which employee would you like to update?",
+        choices: employees
+
+
+      },
+      {
+        type: 'list',
+        name: 'manager',
+        message: "Who is employee's manager?",
+        choices: managers
+      }
+    ])
+    .then((choice)=>{
+      employee= choice.employee;
+      manager = choice.manager;
+      const params=[];
+      params.push(manager);
+      params.push(employee);
+
+      const managerSql = `UPDATE employee SET manager_id=? WHERE id=?`;
+      db.promise().query(managerSql,params)
+      .then(()=>{
+        console.log( "Manger has been updated!");
+        showEmployees();
+      })
+    })
+  })
+}
