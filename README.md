@@ -14,7 +14,7 @@
   * [Questions](#questions)
   
   ## Installation 
-  The user should clone the repository from GitHub and Run npm install in order to install the following npm package dependencies such as inquirer, mysql2, console.table.
+  The user should clone the repository from GitHub and run `npm install` in order to install the following npm package dependencies such as inquirer, mysql2, console.table. To view database from MySQL run `mysql -u root -p`.
 
   ## Usage 
   This application will allow users to view and manage the department, roles, and employees. <img src="utils/team tracker.gif"><br>Please view walkthrough video via  [Screencastify](https://drive.google.com/file/d/1OdnpSC4mjI6TT_bHkuD6n9Bpu2snfCcn/view)<br>
