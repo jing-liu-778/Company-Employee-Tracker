@@ -17,7 +17,7 @@
   The user should clone the repository from GitHub and Run npm install in order to install the following npm package dependencies such as inquirer, mysql2, console.table.
 
   ## Usage 
-  This application will allow users to view and manage the department, roles, and employees. Please view walkthrough video via Screencastify [URL](https://drive.google.com/file/d/1OdnpSC4mjI6TT_bHkuD6n9Bpu2snfCcn/view)<br>
+  This application will allow users to view and manage the department, roles, and employees. Please view walkthrough video via  [Screencastify](https://drive.google.com/file/d/1OdnpSC4mjI6TT_bHkuD6n9Bpu2snfCcn/view)<br>
   
   
   ## License 
