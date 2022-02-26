@@ -127,7 +127,7 @@ const promptUser = () => {
          });
      };
   ---------------------------------------------------------------------------------------------*/
-// show departments
+
 showDepartments = () => {
   const sql = `SELECT department.id, department.department_name as name FROM department;`;
   db.promise()
