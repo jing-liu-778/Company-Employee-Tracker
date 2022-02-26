@@ -710,7 +710,6 @@ deleteEmployee = () => {
 
 // view budget
 viewBudget = () => {
-  // query selector
   const sql = `SELECT  department.id,
   department.department_name as department, 
   SUM(roles.salary) AS budget
